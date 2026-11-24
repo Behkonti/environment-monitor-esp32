@@ -48,6 +48,8 @@
         <div class="updated-label">LAST UPDATE <strong id="last-update">—</strong></div>
       </section>
 
+      <section id="alerts" class="alerts" aria-live="polite"></section>
+
       <section class="metric-grid">
         <article class="metric-card temperature">
           <div class="metric-top"><span>Temperature</span><span class="metric-symbol">°C</span></div>
@@ -65,6 +67,7 @@
           <div class="metric-top"><span>Motion detection</span><span class="metric-symbol">PIR</span></div>
           <div class="metric-value metric-word" id="motion-value">—</div>
           <div class="metric-foot"><span class="metric-dot"></span><span id="motion-note">Waiting for data</span></div>
+          <div class="motion-lamp" id="motion-lamp" aria-label="Motion lamp is off"><span class="lamp-bulb">●</span><span class="lamp-label" id="lamp-label">LAMP OFF</span></div>
           <div class="metric-decoration">⌁</div>
         </article>
         <article class="metric-card light">
@@ -103,7 +106,7 @@
           <tbody id="readings-body"><tr><td colspan="6" class="empty-cell">No readings yet</td></tr></tbody></table>
         </div>
       </section>
-      <footer class="footer"><span>ENVIRONMENT MONITOR <b>•</b> ESP32-S3 SENSOR NETWORK</span><span>DATA REFRESHES EVERY 15 SECONDS</span></footer>
+      <footer class="footer"><span>ENVIRONMENT MONITOR <b>•</b> ESP32-S3 SENSOR NETWORK</span><span>DATA REFRESHES EVERY 5 SECONDS</span></footer>
     </main>
   </div>
   <div class="toast" id="toast" role="status"></div>
