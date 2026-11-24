@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1020">
+  <title>Environment Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>ENV<span class="brand-light">MONITOR</span></span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <a class="nav-item active" href="#overview"><span class="nav-icon">◫</span> Overview</a>
+      <a class="nav-item" href="#devices"><span class="nav-icon">⌘</span> Devices</a>
+      <a class="nav-item" href="#map-section"><span class="nav-icon">◎</span> Device map</a>
+      <div class="sidebar-bottom">
+        <div class="connection-indicator"><i></i><span id="connection-text">Connecting to database</span></div>
+        <div class="sidebar-version">ENVIRONMENT MONITOR <span>v1.0</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">IOT CONTROL CENTER / KAZAKHSTAN</div>
+          <h1>Environment <span>Monitor</span></h1>
+          <p class="page-subtitle">Real-time environmental data from your sensor network.</p>
+        </div>
+        <div class="top-actions">
+          <div class="live-pill"><span class="pulse"></span> LIVE SYSTEM</div>
+          <button class="icon-button" id="refresh-btn" title="Refresh data" aria-label="Refresh data">↻</button>
+        </div>
+      </header>
+
+      <section class="section-heading">
+        <div><h2>Overview</h2><p>Latest readings across your connected devices</p></div>
+        <div class="updated-label">LAST UPDATE <strong id="last-update">—</strong></div>
+      </section>
+
+      <section class="metric-grid">
+        <article class="metric-card temperature">
+          <div class="metric-top"><span>Temperature</span><span class="metric-symbol">°C</span></div>
+          <div class="metric-value" id="temperature-value">—<small>°C</small></div>
+          <div class="metric-foot"><span class="metric-dot"></span><span id="temperature-note">Waiting for data</span></div>
+          <div class="metric-decoration">℃</div>
+        </article>
+        <article class="metric-card humidity">
+          <div class="metric-top"><span>Humidity</span><span class="metric-symbol">%</span></div>
+          <div class="metric-value" id="humidity-value">—<small>%</small></div>
+          <div class="metric-foot"><span class="metric-dot"></span><span id="humidity-note">Waiting for data</span></div>
+          <div class="metric-decoration">◌</div>
+        </article>
+        <article class="metric-card motion">
+          <div class="metric-top"><span>Motion detection</span><span class="metric-symbol">PIR</span></div>
+          <div class="metric-value metric-word" id="motion-value">—</div>
+          <div class="metric-foot"><span class="metric-dot"></span><span id="motion-note">Waiting for data</span></div>
+          <div class="metric-decoration">⌁</div>
+        </article>
+        <article class="metric-card light">
+          <div class="metric-top"><span>Light level</span><span class="metric-symbol">ADC</span></div>
+          <div class="metric-value" id="light-value">—</div>
+          <div class="metric-foot"><span class="metric-dot"></span><span id="light-note">0–4095 raw value</span></div>
+          <div class="metric-decoration">☼</div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <div><h3>Environmental history</h3><p>Temperature and humidity over time</p></div>
+            <select id="device-filter" aria-label="Select device"><option value="all">All devices</option></select>
+          </div>
+          <div class="chart-wrap"><canvas id="history-chart"></canvas></div>
+          <div class="chart-legend"><span><i class="legend-temp"></i> Temperature °C</span><span><i class="legend-hum"></i> Humidity %</span></div>
+        </article>
+        <article class="panel status-panel" id="devices">
+          <div class="panel-heading"><div><h3>Device network</h3><p>Registered sensor nodes</p></div><span class="count-badge" id="device-count">0</span></div>
+          <div id="device-list" class="device-list"><div class="empty-state">Waiting for devices…</div></div>
+          <div class="panel-footer"><span class="status-led"></span><span id="network-summary">No readings received yet</span></div>
+        </article>
+      </section>
+
+      <section class="panel map-panel" id="map-section">
+        <div class="panel-heading"><div><h3>Device locations</h3><p>Locations received from ESP32 coordinates</p></div><span class="map-tag">GPS / COORDINATES</span></div>
+        <div id="device-map"><div class="map-placeholder">Map will appear when devices send coordinates.</div></div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="panel-heading"><div><h3>Recent readings</h3><p>Latest records received from Supabase</p></div><span class="table-tag">LIVE FEED</span></div>
+        <div class="table-scroll">
+          <table><thead><tr><th>DEVICE</th><th>TEMPERATURE</th><th>HUMIDITY</th><th>MOTION</th><th>LIGHT ADC</th><th>TIME</th></tr></thead>
+          <tbody id="readings-body"><tr><td colspan="6" class="empty-cell">No readings yet</td></tr></tbody></table>
+        </div>
+      </section>
+      <footer class="footer"><span>ENVIRONMENT MONITOR <b>•</b> ESP32-S3 SENSOR NETWORK</span><span>DATA REFRESHES EVERY 15 SECONDS</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
